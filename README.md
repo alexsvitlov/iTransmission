@@ -1,4 +1,4 @@
-<img align="left" width="100" height="100" src="./TransmissionPlus/Assets.xcassets/AppIcon.appiconset/Icon1024.png">
+<img align="left" width="100" height="100" src="./TransmissionPlus/Assets.xcassets/AppIcon.appiconset/Icon192.png">
 
 # iTransmission - Fast and Lightweight Torrent App for iOS<br/><br/>
 
