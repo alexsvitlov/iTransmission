@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="TrackerCell" rowHeight="90" id="ewR-l7-R3c" userLabel="Tracker Cell" customClass="TrackerCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ewR-l7-R3c" id="aqj-6g-uIY">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="http://www.google.com/announce" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="TZR-Rs-nvA">
+                        <rect key="frame" x="20" y="5" width="280" height="20.333333333333332"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Seeders: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="077-7F-lvH">
+                        <rect key="frame" x="20" y="53.666666666666664" width="57" height="14.333333333333336"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="N/A" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="ym1-vc-54f">
+                        <rect key="frame" x="20" y="31.333333333333332" width="280" height="14.333333333333332"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="NbO-Jg-m8E">
+                        <rect key="frame" x="85" y="54" width="29" height="21"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="Peers:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="Rus-GW-obD">
+                        <rect key="frame" x="145" y="56" width="39" height="21"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="Hw1-xT-W6c">
+                        <rect key="frame" x="192" y="56" width="41" height="21"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="NbO-Jg-m8E" firstAttribute="centerY" secondItem="077-7F-lvH" secondAttribute="centerY" id="1hF-Tm-p6W"/>
+                    <constraint firstItem="NbO-Jg-m8E" firstAttribute="leading" secondItem="077-7F-lvH" secondAttribute="trailing" constant="8" symbolic="YES" id="3GI-d8-Eod"/>
+                    <constraint firstItem="ym1-vc-54f" firstAttribute="top" secondItem="TZR-Rs-nvA" secondAttribute="bottom" constant="6" id="4xa-yS-4Ry"/>
+                    <constraint firstItem="ym1-vc-54f" firstAttribute="leading" secondItem="aqj-6g-uIY" secondAttribute="leading" constant="20" symbolic="YES" id="6Zq-Z8-wHX"/>
+                    <constraint firstItem="Hw1-xT-W6c" firstAttribute="leading" secondItem="Rus-GW-obD" secondAttribute="trailing" constant="8" symbolic="YES" id="Abt-bQ-Y1O"/>
+                    <constraint firstAttribute="trailing" secondItem="ym1-vc-54f" secondAttribute="trailing" constant="20" symbolic="YES" id="CkR-JC-cd6"/>
+                    <constraint firstItem="077-7F-lvH" firstAttribute="top" secondItem="ym1-vc-54f" secondAttribute="bottom" constant="8" id="FHm-wf-lmo"/>
+                    <constraint firstItem="Rus-GW-obD" firstAttribute="centerY" secondItem="077-7F-lvH" secondAttribute="centerY" id="FO9-3k-qsD"/>
+                    <constraint firstItem="077-7F-lvH" firstAttribute="leading" secondItem="aqj-6g-uIY" secondAttribute="leading" constant="20" symbolic="YES" id="Lnk-YK-rLF"/>
+                    <constraint firstItem="Hw1-xT-W6c" firstAttribute="centerY" secondItem="Rus-GW-obD" secondAttribute="centerY" id="Wm2-0T-YB2"/>
+                    <constraint firstItem="TZR-Rs-nvA" firstAttribute="leading" secondItem="aqj-6g-uIY" secondAttribute="leading" constant="20" symbolic="YES" id="jNv-Ik-Yph"/>
+                    <constraint firstItem="Rus-GW-obD" firstAttribute="leading" secondItem="NbO-Jg-m8E" secondAttribute="trailing" constant="31" id="kFt-zS-S30"/>
+                    <constraint firstItem="TZR-Rs-nvA" firstAttribute="top" secondItem="aqj-6g-uIY" secondAttribute="top" constant="5" id="nMr-U1-cd0"/>
+                    <constraint firstAttribute="trailing" secondItem="TZR-Rs-nvA" secondAttribute="trailing" constant="20" symbolic="YES" id="wa7-Ny-eF9"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="PeerLabel" destination="Rus-GW-obD" id="bVg-QE-bXr"/>
+                <outlet property="PeerNumber" destination="Hw1-xT-W6c" id="UPD-em-fUM"/>
+                <outlet property="SeedLabel" destination="077-7F-lvH" id="EHv-WW-0YL"/>
+                <outlet property="SeedNumber" destination="NbO-Jg-m8E" id="BVL-TO-qWb"/>
+                <outlet property="TrackerLastAnnounceTime" destination="ym1-vc-54f" id="EKB-Yo-1Ag"/>
+                <outlet property="TrackerURL" destination="TZR-Rs-nvA" id="FTN-rb-CXL"/>
+            </connections>
+            <point key="canvasLocation" x="29" y="-1"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
