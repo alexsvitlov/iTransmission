@@ -30,6 +30,8 @@ Features of the app:
 - Many options to configure and customize your torrent downloading.
 - Dark Mode.
 
+Supports iOS 13 and up.
+
 ## Build
 
 Simply download or clone the project, open XCode and run the app.
