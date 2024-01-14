@@ -2,6 +2,14 @@
 
 # iTransmission - Fast and Lightweight Torrent App for iOS<br/><br/>
 
+## Screenshots
+<details>
+<summary>Screenshots</summary>
+  
+![Screenshots](https://github.com/alexsvitlov/iTransmission/assets/156222215/60555e15-fdde-4058-bbfe-9c55b48b1a0b)
+
+</details>
+
 ## Download
 
 **Latest release:** ([GitHub Release](https://github.com/alexsvitlov/iTransmission/releases/latest))
