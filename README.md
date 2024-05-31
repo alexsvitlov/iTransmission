@@ -62,10 +62,7 @@ Download the IPA file from [here](https://github.com/alexsvitlov/iTransmission/r
     * Open AltStore and navigate to the "My Apps" tab.
     * Choose the plus sign button located in the top right corner and open the IPA file.
     * When prompted sign in with your Apple ID. Two-factor Authentication is supported, but app-specific passwords are not.
-
-## Note
-
-* Signing with a non-developer account will have the app expire in 7 days, but Altstore automates re-signing as long as it is connected to your PC.
+    * Signing with a non-developer account will have the app expire in 7 days, but Altstore automates re-signing as long as it is connected to your PC.
 
 ### Sideloadly
 
