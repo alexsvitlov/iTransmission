@@ -75,7 +75,7 @@ Download the IPA file from [here](https://github.com/alexsvitlov/iTransmission/r
 * iTransmission app will now install on your iOS device.
 </details>
 
-### Sideloading (TrollStore)
+### TrollStore
 * If you are on <b>iOS 14 - 16.6.1</b> (iPhone X - A11 and older) or <b>iOS 14 - 16.6 beta 1</b> (iPhone 11 and newer), install with TrollStore:
 * Install [TrollStore](https://github.com/opa334/TrollStore) (or [this guide](https://ios.cfw.guide/installing-trollstore/))
 * Download the IPA file from the releases
