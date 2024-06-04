@@ -512,6 +512,10 @@
     UIAlertController *dialog = [UIAlertController alertControllerWithTitle:@"Add from magnet" message:@"Please input torrent or magnet" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSString *data = dialog.textFields.firstObject.text;
+        if (data.length < 6) {
+            NSLog(@"Error adding magnet");
+            return;
+        }
         NSString *magnetSubstring = [data substringWithRange:NSMakeRange(0,6)];
         NSLog(@"Magnet substring: %@", magnetSubstring);
         if([magnetSubstring isEqualToString:@"magnet"])

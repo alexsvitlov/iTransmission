@@ -209,7 +209,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if (indexPath.section == 5) {
+    if (indexPath.section == 5 && [MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
         mailComposer.mailComposeDelegate = self;
         [mailComposer setSubject:@"iTransmission feedback"];
