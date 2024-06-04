@@ -1,6 +1,14 @@
-<img align="left" width="100" height="100" src="./TransmissionPlus/Assets.xcassets/AppIcon.appiconset/Icon1024.png">
+<img align="left" width="100" height="100" src="./TransmissionPlus/Assets.xcassets/AppIcon.appiconset/Icon192.png">
 
 # iTransmission - Fast and Lightweight Torrent App for iOS<br/><br/>
+
+## Screenshots
+<details>
+<summary>Screenshots</summary>
+  
+![Screenshots](https://github.com/alexsvitlov/iTransmission/assets/156222215/60555e15-fdde-4058-bbfe-9c55b48b1a0b)
+
+</details>
 
 ## Download
 
@@ -21,6 +29,8 @@ Features of the app:
 - Download in the background.
 - Many options to configure and customize your torrent downloading.
 - Dark Mode.
+
+Supports iOS 13 and up.
 
 ## Build
 
@@ -52,11 +62,25 @@ Download the IPA file from [here](https://github.com/alexsvitlov/iTransmission/r
     * Open AltStore and navigate to the "My Apps" tab.
     * Choose the plus sign button located in the top right corner and open the IPA file.
     * When prompted sign in with your Apple ID. Two-factor Authentication is supported, but app-specific passwords are not.
+    * Signing with a non-developer account will have the app expire in 7 days, but Altstore automates re-signing as long as it is connected to your PC.
 
+### Sideloadly
 
-## Note
+* The latest version of [Sideloadly](https://sideloadly.io/)
+* Plug your iOS device into your computer
+* Make sure your computer is trusted and allowed to view the contents of your device
+* Drag and drop the iTransmission .ipa file into Sideloadly
+* Enter your Apple ID
+* Enter your password
+* iTransmission app will now install on your iOS device.
+</details>
 
-* Signing with a non-developer account will have the app expire in 7 days, but Altstore automates re-signing as long as it is connected to your PC.
+### TrollStore
+* If you are on <b>iOS 14 - 16.6.1</b> (iPhone X - A11 and older) or <b>iOS 14 - 16.6 beta 1</b> (iPhone 11 and newer), install with TrollStore:
+* Install [TrollStore](https://github.com/opa334/TrollStore) (or [this guide](https://ios.cfw.guide/installing-trollstore/))
+* Download the IPA file from the releases
+* Open IPA in TrollStore
+* Install it
 
 ## Libraries used
 
