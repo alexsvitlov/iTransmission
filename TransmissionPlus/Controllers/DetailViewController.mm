@@ -402,6 +402,10 @@
     }]];
     
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        UIPopoverPresentationController *popoverPresentationController = alertController.popoverPresentationController;
+        popoverPresentationController.barButtonItem = self.removeButton;
+    }
     
     [self presentViewController:alertController animated:YES completion:nil];
 }
