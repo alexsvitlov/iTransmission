@@ -55,7 +55,7 @@ Download the IPA file from [here](https://github.com/alexsvitlov/iTransmission/r
 
 * Option 1
     * Copy the link below then open it in Safari.
-    * `altstore://install?url=https://github.com/alexsvitlov/iTransmission/releases/download/1.1.0/iTransmission.ipa`
+    * `altstore://install?url=https://github.com/alexsvitlov/iTransmission/releases/download/1.0.0/iTransmission.ipa`
 * Option 2
     * Download the IPA/ZIP file from the link above.
     * Copy the IPA file to your device, using iCloud Drive, Airdrop, or any other method.
