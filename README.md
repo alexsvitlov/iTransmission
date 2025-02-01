@@ -2,7 +2,7 @@
 
 # iTransmission - Fast and Lightweight Torrent App for iOS<br/><br/>
 
-<a href="altstore://source/?url=https://itransmissiondev.web.app/redirect.html"><img src="https://itransmissiondev.web.app/images/MainAssets/Altstore.png" width="200"></a>
+<a href="https://itransmissiondev.web.app/redirect.html"><img src="https://itransmissiondev.web.app/images/MainAssets/Altstore.png" width="200"></a>
 
 ## Screenshots
 <details>
