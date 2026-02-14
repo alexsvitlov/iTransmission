@@ -80,16 +80,16 @@
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-    [textField resignFirstResponder];
-    
-    if ([textField.superview.superview isKindOfClass:[UITableViewCell class]])
-    {
-        UITableViewCell *cell = (UITableViewCell*)textField.superview.superview;
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        
-        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:TRUE];
+    UIView *view = textField.superview;
+    while (view && ![view isKindOfClass:[UITableViewCell class]])
+        view = view.superview;
+
+    if (view) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)view];
+        if (indexPath)
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     }
-    
+
     return YES;
 }
 
@@ -102,9 +102,14 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     [self.navigationItem.rightBarButtonItem setEnabled:YES];
-    UITableViewCell *cell = (UITableViewCell*)[[textField superview] superview];
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    UIView *view = textField.superview;
+    while (view && ![view isKindOfClass:[UITableViewCell class]])
+        view = view.superview;
+    if (view) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)view];
+        if (indexPath)
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    }
     
     if (textField == fBindPortTextField) {
         NSString *newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -251,34 +256,40 @@
 }
 
 - (void)savePreferences {
-    [self.controller setGlobalUploadSpeedLimit:[[fUploadSpeedLimitField text] intValue]];
-    [self.controller setGlobalDownloadSpeedLimit:[[fDownloadSpeedLimitField text] intValue]];
     tr_session *fHandle = [self.controller sessionHandle];
     NSUserDefaults *fDefaults = [NSUserDefaults standardUserDefaults];
-    
+
     if ([fAutoPortMapSwitch isOn] != [self.originalPreferences boolForKey:@"NatTraversal"]) {
         [fDefaults setBool:[fAutoPortMapSwitch isOn] forKey:@"NatTraversal"];
         tr_sessionSetPortForwardingEnabled(fHandle, [fAutoPortMapSwitch isOn]);
     }
-    
+
     if([fEnableBackgroundDownloadingSwitch isOn] != [self.originalPreferences boolForKey:@"BackgroundDownloading"])
     {
         [fDefaults setBool:[fEnableBackgroundDownloadingSwitch isOn] forKey:@"BackgroundDownloading"];
     }
-    
+
     // set bind port
     uint16_t const port = [fBindPortTextField text].integerValue;
     [fDefaults setInteger:port forKey:@"BindPort"];
     tr_sessionSetPeerPort(fHandle, port);
 
-    [fDefaults synchronize];
-    
+    // set speed limits
     NSInteger limit = [[fUploadSpeedLimitField text] integerValue];
     [self.controller setGlobalUploadSpeedLimit:limit];
-    
-    limit = [[fDownloadSpeedLimitField text] intValue];
+
+    limit = [[fDownloadSpeedLimitField text] integerValue];
     [self.controller setGlobalDownloadSpeedLimit:limit];
-    
+
+    // set connection limits
+    NSInteger connections = [[fMaximumConnectionsTextField text] integerValue];
+    [self.controller setGlobalMaximumConnections:connections];
+
+    connections = [[fConnectionsPerTorrentTextField text] integerValue];
+    [self.controller setConnectionsPerTorrent:connections];
+
+    [fDefaults synchronize];
+
     [self performSelector:@selector(loadPreferences) withObject:nil afterDelay:0.0f];
 }
 
@@ -379,7 +390,7 @@
 - (IBAction)maximumConnectionsPerTorrentChanged:(id)sender
 {
     uint16_t intValue = (uint16_t)[[fMaximumConnectionsTextField text] intValue];
-    [self.controller setConnectionsPerTorrent:intValue];
+    [self.controller setGlobalMaximumConnections:intValue];
 }
 
 - (IBAction)doneClicked:(id)sender {

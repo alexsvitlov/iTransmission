@@ -1376,7 +1376,7 @@
                                 <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                 <connections>
-                                    <action selector="maximumConnectionsPerTorrentChanged:" destination="yi8-CF-b6c" eventType="valueChanged" id="54m-GR-pus"/>
+                                    <action selector="maximumConnectionsPerTorrentChanged:" destination="yi8-CF-b6c" eventType="editingDidEnd" id="54m-GR-pus"/>
                                 </connections>
                             </textField>
                         </subviews>
@@ -1408,7 +1408,7 @@
                                 <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
-                                    <action selector="connectionsPerTorrentChanged:" destination="yi8-CF-b6c" eventType="valueChanged" id="0U2-C3-i2p"/>
+                                    <action selector="connectionsPerTorrentChanged:" destination="yi8-CF-b6c" eventType="editingDidEnd" id="0U2-C3-i2p"/>
                                 </connections>
                             </textField>
                         </subviews>
