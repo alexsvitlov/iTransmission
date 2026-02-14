@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 @import UserNotifications;
+@import Network;
 #include <atomic> /* atomic, atomic_fetch_add_explicit, memory_order_relaxed */
 
 #include <libtransmission/transmission.h>
@@ -86,6 +87,8 @@ static tr_rpc_callback_status rpcCallback([[maybe_unused]] tr_session* handle, t
 @property(nonatomic) NSMutableSet<Torrent*>* fAddingTransfers;
 @property(nonatomic, readonly) NSUserDefaults* fDefaults;
 @property(nonatomic) NSURLSession* fSession;
+@property(nonatomic) nw_path_monitor_t pathMonitor;
+@property(nonatomic) NSMutableSet<NSString*>* wifiPausedHashes;
 
 @end
 
@@ -301,11 +304,21 @@ void onTorrentCompletenessChanged(tr_torrent* tor, tr_completeness status, bool 
     tr_variantDictAddInt(&settings, TR_KEY_queue_stalled_minutes, [_fDefaults integerForKey:@"StalledMinutes"]);
     tr_variantDictAddReal(&settings, TR_KEY_ratio_limit, [_fDefaults floatForKey:@"RatioLimit"]);
     tr_variantDictAddBool(&settings, TR_KEY_ratio_limit_enabled, [_fDefaults boolForKey:@"RatioCheck"]);
+    // set encryption mode
+    tr_encryption_mode encryptionMode = TR_ENCRYPTION_PREFERRED;
+    if ([_fDefaults boolForKey:@"EncryptionRequire"])
+        encryptionMode = TR_ENCRYPTION_REQUIRED;
+    else if (![_fDefaults boolForKey:@"EncryptionPrefer"])
+        encryptionMode = TR_CLEAR_PREFERRED;
+    tr_variantDictAddInt(&settings, TR_KEY_encryption, encryptionMode);
+
     tr_variantDictAddBool(&settings, TR_KEY_rename_partial_files, [_fDefaults boolForKey:@"RenamePartialFiles"]);
     tr_variantDictAddBool(&settings, TR_KEY_rpc_authentication_required, [_fDefaults boolForKey:@"RPCAuthorize"]);
     tr_variantDictAddBool(&settings, TR_KEY_rpc_enabled, [_fDefaults boolForKey:@"RPC"]);
     tr_variantDictAddInt(&settings, TR_KEY_rpc_port, [_fDefaults integerForKey:@"RPCPort"]);
     tr_variantDictAddStr(&settings, TR_KEY_rpc_username, [_fDefaults stringForKey:@"RPCUsername"].UTF8String);
+    if ([_fDefaults objectForKey:@"RPCPassword"])
+        tr_variantDictAddStr(&settings, TR_KEY_rpc_password, [_fDefaults stringForKey:@"RPCPassword"].UTF8String);
     tr_variantDictAddBool(&settings, TR_KEY_rpc_whitelist_enabled, [_fDefaults boolForKey:@"RPCUseWhitelist"]);
     tr_variantDictAddBool(&settings, TR_KEY_rpc_host_whitelist_enabled, [_fDefaults boolForKey:@"RPCUseHostWhitelist"]);
     tr_variantDictAddBool(&settings, TR_KEY_seed_queue_enabled, [_fDefaults boolForKey:@"QueueSeed"]);
@@ -351,7 +364,10 @@ void onTorrentCompletenessChanged(tr_torrent* tor, tr_completeness status, bool 
     }
 
     tr_sessionSetRPCCallback(_fLib, rpcCallback, (__bridge void*)(self));
-    
+
+    _wifiPausedHashes = [[NSMutableSet alloc] init];
+    [self startNetworkMonitoring];
+
     [self loadTorrentHistory];
     
     //observe notifications
@@ -1070,6 +1086,303 @@ void onTorrentCompletenessChanged(tr_torrent* tor, tr_completeness status, bool 
 {
     return tr_sessionGetPeerLimitPerTorrent(self.fLib);
 }
+
+#pragma mark - Encryption
+
+- (void)setEncryptionMode:(tr_encryption_mode)mode
+{
+    [_fDefaults setBool:(mode != TR_CLEAR_PREFERRED) forKey:@"EncryptionPrefer"];
+    [_fDefaults setBool:(mode == TR_ENCRYPTION_REQUIRED) forKey:@"EncryptionRequire"];
+    tr_sessionSetEncryption(self.fLib, mode);
+}
+
+- (tr_encryption_mode)encryptionMode
+{
+    return tr_sessionGetEncryption(self.fLib);
+}
+
+#pragma mark - Seeding limits
+
+- (void)setRatioLimitEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"RatioCheck"];
+    tr_sessionSetRatioLimited(self.fLib, enabled);
+}
+
+- (BOOL)ratioLimitEnabled
+{
+    return tr_sessionIsRatioLimited(self.fLib);
+}
+
+- (void)setRatioLimit:(CGFloat)limit
+{
+    [_fDefaults setFloat:limit forKey:@"RatioLimit"];
+    tr_sessionSetRatioLimit(self.fLib, limit);
+}
+
+- (CGFloat)ratioLimit
+{
+    return tr_sessionGetRatioLimit(self.fLib);
+}
+
+- (void)setIdleLimitEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"IdleLimitCheck"];
+    tr_sessionSetIdleLimited(self.fLib, enabled);
+}
+
+- (BOOL)idleLimitEnabled
+{
+    return tr_sessionIsIdleLimited(self.fLib);
+}
+
+- (void)setIdleLimitMinutes:(NSInteger)minutes
+{
+    [_fDefaults setInteger:minutes forKey:@"IdleLimitMinutes"];
+    tr_sessionSetIdleLimit(self.fLib, (uint16_t)minutes);
+}
+
+- (NSInteger)idleLimitMinutes
+{
+    return tr_sessionGetIdleLimit(self.fLib);
+}
+
+#pragma mark - Queue
+
+- (void)setDownloadQueueEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"Queue"];
+    tr_sessionSetQueueEnabled(self.fLib, TR_DOWN, enabled);
+}
+
+- (BOOL)downloadQueueEnabled
+{
+    return tr_sessionGetQueueEnabled(self.fLib, TR_DOWN);
+}
+
+- (void)setDownloadQueueSize:(NSInteger)size
+{
+    [_fDefaults setInteger:size forKey:@"QueueDownloadNumber"];
+    tr_sessionSetQueueSize(self.fLib, TR_DOWN, (size_t)size);
+}
+
+- (NSInteger)downloadQueueSize
+{
+    return (NSInteger)tr_sessionGetQueueSize(self.fLib, TR_DOWN);
+}
+
+- (void)setSeedQueueEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"QueueSeed"];
+    tr_sessionSetQueueEnabled(self.fLib, TR_UP, enabled);
+}
+
+- (BOOL)seedQueueEnabled
+{
+    return tr_sessionGetQueueEnabled(self.fLib, TR_UP);
+}
+
+- (void)setSeedQueueSize:(NSInteger)size
+{
+    [_fDefaults setInteger:size forKey:@"QueueSeedNumber"];
+    tr_sessionSetQueueSize(self.fLib, TR_UP, (size_t)size);
+}
+
+- (NSInteger)seedQueueSize
+{
+    return (NSInteger)tr_sessionGetQueueSize(self.fLib, TR_UP);
+}
+
+#pragma mark - Peer discovery
+
+- (void)setDHTEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"DHTGlobal"];
+    tr_sessionSetDHTEnabled(self.fLib, enabled);
+}
+
+- (BOOL)dhtEnabled
+{
+    return tr_sessionIsDHTEnabled(self.fLib);
+}
+
+- (void)setPEXEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"PEXGlobal"];
+    tr_sessionSetPexEnabled(self.fLib, enabled);
+}
+
+- (BOOL)pexEnabled
+{
+    return tr_sessionIsPexEnabled(self.fLib);
+}
+
+- (void)setUTPEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"UTPGlobal"];
+    tr_sessionSetUTPEnabled(self.fLib, enabled);
+}
+
+- (BOOL)utpEnabled
+{
+    return tr_sessionIsUTPEnabled(self.fLib);
+}
+
+- (void)setLPDEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"LocalPeerDiscoveryGlobal"];
+    tr_sessionSetLPDEnabled(self.fLib, enabled);
+}
+
+- (BOOL)lpdEnabled
+{
+    return tr_sessionIsLPDEnabled(self.fLib);
+}
+
+#pragma mark - Blocklist
+
+- (void)setBlocklistEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"BlocklistNew"];
+    tr_blocklistSetEnabled(self.fLib, enabled);
+}
+
+- (BOOL)blocklistEnabled
+{
+    return tr_blocklistIsEnabled(self.fLib);
+}
+
+- (void)setBlocklistURL:(NSString *)url
+{
+    [_fDefaults setObject:url forKey:@"BlocklistURL"];
+    tr_blocklistSetURL(self.fLib, url.UTF8String);
+}
+
+- (NSString *)blocklistURL
+{
+    char const *url = tr_blocklistGetURL(self.fLib);
+    return url ? [NSString stringWithUTF8String:url] : @"";
+}
+
+#pragma mark - Remote access (RPC)
+
+- (void)setRPCEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"RPC"];
+    tr_sessionSetRPCEnabled(self.fLib, enabled);
+}
+
+- (BOOL)rpcEnabled
+{
+    return tr_sessionIsRPCEnabled(self.fLib);
+}
+
+- (void)setRPCPort:(NSInteger)port
+{
+    [_fDefaults setInteger:port forKey:@"RPCPort"];
+    tr_sessionSetRPCPort(self.fLib, (uint16_t)port);
+}
+
+- (NSInteger)rpcPort
+{
+    return tr_sessionGetRPCPort(self.fLib);
+}
+
+- (void)setRPCAuthEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"RPCAuthorize"];
+    tr_sessionSetRPCPasswordEnabled(self.fLib, enabled);
+}
+
+- (BOOL)rpcAuthEnabled
+{
+    return tr_sessionIsRPCPasswordEnabled(self.fLib);
+}
+
+- (void)setRPCUsername:(NSString *)username
+{
+    [_fDefaults setObject:username forKey:@"RPCUsername"];
+    tr_sessionSetRPCUsername(self.fLib, username.UTF8String);
+}
+
+- (NSString *)rpcUsername
+{
+    char const *name = tr_sessionGetRPCUsername(self.fLib);
+    return name ? [NSString stringWithUTF8String:name] : @"";
+}
+
+- (void)setRPCPassword:(NSString *)password
+{
+    [_fDefaults setObject:password forKey:@"RPCPassword"];
+    tr_sessionSetRPCPassword(self.fLib, password.UTF8String);
+}
+
+- (NSString *)rpcPassword
+{
+    return [_fDefaults stringForKey:@"RPCPassword"] ?: @"";
+}
+
+#pragma mark - Wifi-only
+
+- (void)setWifiOnlyEnabled:(BOOL)enabled
+{
+    [_fDefaults setBool:enabled forKey:@"WiFiOnlyDownloading"];
+    if (!enabled && self.wifiPausedHashes.count > 0)
+        [self resumeWifiPausedTorrents];
+}
+
+- (BOOL)wifiOnlyEnabled
+{
+    return [_fDefaults boolForKey:@"WiFiOnlyDownloading"];
+}
+
+- (void)startNetworkMonitoring
+{
+    nw_path_monitor_t monitor = nw_path_monitor_create();
+    nw_path_monitor_set_queue(monitor, dispatch_get_main_queue());
+
+    __weak AppDelegate *wself = self;
+    nw_path_monitor_set_update_handler(monitor, ^(nw_path_t path) {
+        [wself handleNetworkPathUpdate:path];
+    });
+
+    nw_path_monitor_start(monitor);
+    self.pathMonitor = monitor;
+}
+
+- (void)handleNetworkPathUpdate:(nw_path_t)path
+{
+    if (!self.wifiOnlyEnabled)
+        return;
+
+    BOOL hasWifi = nw_path_uses_interface_type(path, nw_interface_type_wifi);
+
+    if (!hasWifi) {
+        for (Torrent *torrent in self.fTorrents) {
+            if (torrent.isActive) {
+                [self.wifiPausedHashes addObject:torrent.hashString];
+                [torrent stopTransfer];
+            }
+        }
+        if (self.wifiPausedHashes.count > 0)
+            [self postMessage:@"Torrents paused — no wifi connection"];
+    } else {
+        [self resumeWifiPausedTorrents];
+    }
+}
+
+- (void)resumeWifiPausedTorrents
+{
+    if (self.wifiPausedHashes.count == 0)
+        return;
+
+    for (Torrent *torrent in self.fTorrents) {
+        if ([self.wifiPausedHashes containsObject:torrent.hashString])
+            [torrent startTransfer];
+    }
+    [self.wifiPausedHashes removeAllObjects];
+}
+
 
 - (void)invalidOpenAlert:(NSString*)filename
 {
