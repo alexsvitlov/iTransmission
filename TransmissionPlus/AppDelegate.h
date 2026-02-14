@@ -53,5 +53,61 @@ typedef NS_ENUM(NSUInteger, AddType) { //
 - (void)postMessage:(NSString*)msg;
 - (void)postFinishMessage:(NSString*)msg;
 
+// Encryption
+- (void)setEncryptionMode:(tr_encryption_mode)mode;
+- (tr_encryption_mode)encryptionMode;
+
+// Seeding limits
+- (void)setRatioLimitEnabled:(BOOL)enabled;
+- (BOOL)ratioLimitEnabled;
+- (void)setRatioLimit:(CGFloat)limit;
+- (CGFloat)ratioLimit;
+- (void)setIdleLimitEnabled:(BOOL)enabled;
+- (BOOL)idleLimitEnabled;
+- (void)setIdleLimitMinutes:(NSInteger)minutes;
+- (NSInteger)idleLimitMinutes;
+
+// Queue
+- (void)setDownloadQueueEnabled:(BOOL)enabled;
+- (BOOL)downloadQueueEnabled;
+- (void)setDownloadQueueSize:(NSInteger)size;
+- (NSInteger)downloadQueueSize;
+- (void)setSeedQueueEnabled:(BOOL)enabled;
+- (BOOL)seedQueueEnabled;
+- (void)setSeedQueueSize:(NSInteger)size;
+- (NSInteger)seedQueueSize;
+
+// Peer discovery
+- (void)setDHTEnabled:(BOOL)enabled;
+- (BOOL)dhtEnabled;
+- (void)setPEXEnabled:(BOOL)enabled;
+- (BOOL)pexEnabled;
+- (void)setUTPEnabled:(BOOL)enabled;
+- (BOOL)utpEnabled;
+- (void)setLPDEnabled:(BOOL)enabled;
+- (BOOL)lpdEnabled;
+
+// Blocklist
+- (void)setBlocklistEnabled:(BOOL)enabled;
+- (BOOL)blocklistEnabled;
+- (void)setBlocklistURL:(NSString *)url;
+- (NSString *)blocklistURL;
+
+// Remote access (RPC)
+- (void)setRPCEnabled:(BOOL)enabled;
+- (BOOL)rpcEnabled;
+- (void)setRPCPort:(NSInteger)port;
+- (NSInteger)rpcPort;
+- (void)setRPCAuthEnabled:(BOOL)enabled;
+- (BOOL)rpcAuthEnabled;
+- (void)setRPCUsername:(NSString *)username;
+- (NSString *)rpcUsername;
+- (void)setRPCPassword:(NSString *)password;
+- (NSString *)rpcPassword;
+
+// Wifi-only
+- (void)setWifiOnlyEnabled:(BOOL)enabled;
+- (BOOL)wifiOnlyEnabled;
+
 @end
 

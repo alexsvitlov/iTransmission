@@ -206,5 +206,9 @@
 	<true/>
 	<key>BackgroundDownloading</key>
 	<true/>
+	<key>WiFiOnlyDownloading</key>
+	<false/>
+	<key>RPCPassword</key>
+	<string></string>
 </dict>
 </plist>
